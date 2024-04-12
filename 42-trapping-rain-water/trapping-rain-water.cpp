@@ -14,7 +14,6 @@ public:
             right[i]=max(maxi,height[i]);
             maxi=max(maxi,height[i]);
         }
-        // return 0;
         int ans=0;
         for(int i=0; i<size; i++){
             int mini=min(left[i],right[i]);
