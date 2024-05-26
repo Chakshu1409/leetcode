@@ -1,28 +1,84 @@
 class Solution {
 public:
     long long maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
-        int n = nums.size();
-        vector<vector<long long>> temp(n, vector<long long>(2, -1)); // temp[current_index(node)][is_even]
+        // i can choose any pair of nodes and do there XOR.
+        // the xor will traverse.
+        // find the number of nodes which increase if it is XORed;
+        // if there are odd number of nodes, which increase on XORING
+           // then choose one element from elements which do not increase 
+           // on xoring and pair the element with the element wich decreasews the lowest..
         
-        return calculateMax(nums, n, k, 0, 1, temp);
-    }
+        // if odd number..
+          // find the node with smallest incrase;
+          // if nodes are present to pair with leave the process.
+          // find the node with smallest decrease(if there are nodes present);
+          // if decrease > increase  --> do nothing
+          // else take xor of both of them..
 
-private:
-    // calculate_max -> cur_ind -> cur_index of the tree and is_even represents whether we have already changed (XOR) even or odd number of nodes 
-    long long calculateMax(vector<int>& nums, int n, int k, int curInd, int isEven, vector<vector<long long>>& temp) {
-        if (curInd == n) {  // if we go to node which doesn't exist
-            return isEven == 1 ? 0 : LLONG_MIN;
+        // the main catch is i can propogate XOR anywhere in the tree
+        int n=nums.size();
+        vector<int> diff(n,0);
+        int count=0;
+        int maxiNegative=INT_MIN;
+        int miniPositive=INT_MAX;
+        for(int i=0; i<n; i++){
+            diff[i] = (nums[i]^k) - nums[i];
+            if(diff[i] > 0){
+                count++;
+                miniPositive=min(diff[i], miniPositive);
+            }
+            if(diff[i] <= 0){
+                maxiNegative= max(maxiNegative, diff[i]);
+            }
         }
-        if (temp[curInd][isEven] != -1) {  // if we've already encountered this state
-            return temp[curInd][isEven];
+        cout<<count<<"kl";
+
+
+        long long ans=0;
+        if(maxiNegative == INT_MIN){
+            for(int i=0; i<n; i++){
+                ans  += nums[i] + diff[i];
+            }
+            if(n%2==0){
+                return ans;
+
+            }
+            ans-=miniPositive;
+            return ans;
         }
 
-        // checking all possible variants (no XOR or XOR)
-        long long noXor = nums[curInd] + calculateMax(nums, n, k, curInd + 1, isEven, temp);  // we don't change the number of XOR nodes
-        long long withXor = (nums[curInd] ^ k) + calculateMax(nums, n, k, curInd + 1, !isEven, temp);  // we added 1 XORed node
+        if(count%2==0){
+            // cout<<"HI";
+            for(int i=0; i<n; i++){
+                ans+= nums[i];
+                if(diff[i] > 0){
+                    ans += diff[i]; 
+                }
+            }
+            return ans;
+        }
 
-        long long mxPossible = max(noXor, withXor);
-        temp[curInd][isEven] = mxPossible;
-        return mxPossible;
+        if(abs(maxiNegative) < miniPositive){
+            //  cout<<"HI";
+            for(int i=0; i<n; i++){
+                ans+= nums[i];
+                if(diff[i] > 0){
+                    ans+= diff[i];
+                }
+            }
+            ans+=maxiNegative;
+            return ans;
+        }
+
+        for(int i=0; i<n; i++){
+            ans+= nums[i];
+            if(diff[i] > 0){
+                ans+= diff[i];
+            }        
+        }
+        ans-=miniPositive;
+        return ans;
+
+
     }
 };
