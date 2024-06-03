@@ -1,39 +1,51 @@
 class Solution {
 public:
-    vector<vector<string>> partition(string s) {
-        vector<vector<string>> result;
-        vector<string> path;
-        backtrack(s, 0, path, result);
-        return result;
-    }
-
-private:
-    void backtrack(const string& s, int start, vector<string>& path, vector<vector<string>>& result) {
-        // If we've reached the end of the string, add the current partition to the result list
-        if (start == s.length()) {
-            result.push_back(path);
+    void helper(string& s, int& size, int index, vector<vector<string>>& ans, vector<string> temp, vector<vector<int>>& check){
+        if(index==size){
+            ans.push_back(temp);
             return;
         }
-        // Explore all possible partitions
-        for (int end = start + 1; end <= s.length(); ++end) {
-            // If the current substring is a palindrome, add it to the current path
-            if (isPalindrome(s, start, end - 1)) {
-                path.push_back(s.substr(start, end - start));
-                // Recur to find other partitions
-                backtrack(s, end, path, result);
-                // Backtrack to explore other partitions
-                path.pop_back();
+        string current="";
+        for(int i=index; i<size; i++){
+            current+=s[i];
+            if(check[index][i] == 1){
+                temp.push_back(current);
+                helper(s,size,i+1,ans,temp,check);
+                temp.pop_back();
             }
         }
     }
 
-    bool isPalindrome(const string& s, int left, int right) {
-        // Check if the substring s[left:right+1] is a palindrome
-        while (left < right) {
-            if (s[left++] != s[right--]) {
+    bool checkPalind(string s){
+        int size=s.size();
+        for(int i=0; i<size/2; i++){
+            if(s[i] != s[size-1-i]){
                 return false;
             }
         }
         return true;
+    }
+
+    vector<vector<string>> partition(string s) {
+        int size=s.size();
+        int index=0;
+
+        vector<vector<int>> check(size, vector<int>(size,0));
+        for(int i=0; i<size; i++){
+            string current="";
+            for(int j=i; j<size; j++){
+                current+=s[j];
+                if(checkPalind(current)){
+                    check[i][j]=1;
+                }
+            }
+        }
+
+        vector<string> temp;
+        vector<vector<string>> ans;
+        helper(s,size,index,ans,temp,check);
+
+        return ans;
+
     }
 };
