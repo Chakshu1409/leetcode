@@ -1,49 +1,27 @@
 class Solution {
 public:
     int maxProduct(vector<int>& nums) {
-        int size=nums.size();
+        int answer=INT_MIN;
+        int n=nums.size();
+	int maxiProduct=1;
+	int minProduct=1;
 
-        int ans=INT_MIN;
+	for(int i=0; i<n; i++){
+    int temp= max(nums[i], max(maxiProduct*nums[i], minProduct*nums[i]));
+	
 
-        int i=0;
-        int j=0;
+	minProduct = min(nums[i], min(maxiProduct*nums[i], minProduct*nums[i]));
 
-        while(j<size){
+    maxiProduct=temp;
+	
+	answer = max(answer, maxiProduct);
+    cout<<answer<<endl;
+    cout<<maxiProduct<<endl;
+    cout<<minProduct<<endl;
+    cout<<endl;
+}
 
-            if(nums[j] == 0){
-                j++;
-                i=j;
-
-                ans=max(ans,0);
-                continue;
-            }
-            int current=1;
-
-            while(j<size && nums[j] !=0){
-                j++;
-            }
-            // if(j<size && nums[j] == 0){
-            //     ans= max(ans,0);
-            // }
-            int current1=1;
-            int current2=1;
-
-            for(int k=i; k<j; k++){
-                if(current1 >= 1e8){
-                    break;
-                }
-                current1*=nums[k];
-                ans=max(ans, current1);
-            }
-            for(int k=j-1; k>=i; k--){
-                if(current2>1e8){
-                    break;
-                }
-                current2*=nums[k];
-                ans=max(ans, current2);
-            }
-        }
-        return ans;
+return answer;
 
     }
 };
