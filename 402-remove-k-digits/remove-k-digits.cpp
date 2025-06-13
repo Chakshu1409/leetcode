@@ -1,37 +1,43 @@
 class Solution {
 public:
-    string removeKdigits(string nums, int k) {
-        if(k==nums.length()) return "0";
-        if(k==0) return nums;
-        stack<char> st;
-        for(int i=0;i<nums.length();i++){
-            if(k==0) st.push(nums[i]);
-            else if(st.empty()){
-                st.push(nums[i]);
-            }
-            else if(st.top()<=nums[i]) st.push(nums[i]);
-            else if(st.top()>nums[i]){
-                while(k>0 && st.size() && st.top()>nums[i]){
-                    st.pop();
-                    k--;
-                }
-                st.push(nums[i]);
-            }
-            if(st.size() == 1 && nums[i] == '0')
+    string removeKdigits(string num, int k) {
+        int size=num.size();
+
+        if(k>=size){
+            return "0";
+        }
+
+        stack<int> st;
+
+        for(int i=0; i<size; i++){
+            while(!st.empty() && st.top() > num[i]-'0' && k>0){
                 st.pop();
+                k--;
+            }
+            st.push(num[i]-'0');
+        }
+        while(!st.empty() && k>0){
+            st.pop();
+            k--;
         }
         string ans="";
-        while(k && st.size()){
-            k--;
-            st.pop();
-        }
-        int n=st.size();
-        for(int i=0;i<n;i++){
-            ans.push_back(st.top());
+        while(!st.empty()){
+            ans+=(to_string(st.top()));
             st.pop();
         }
         reverse(ans.begin(),ans.end());
-        if(ans.length()==0) return "0";
-        return ans;
+        // cout<<ans<<endl;
+        int index=-1;
+        int size1=ans.size();
+        for(int i=0; i<size1; i++){
+            if(ans[i]!='0'){
+                index=i;
+                break;
+            }
+        }
+        if(index == -1){
+            return "0";
+        }
+        return ans.substr(index);
     }
 };
