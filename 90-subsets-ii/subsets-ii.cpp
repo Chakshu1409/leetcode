@@ -1,30 +1,32 @@
 class Solution {
 public:
-    void helper(vector<int>& nums, int index, int size, vector<vector<int>>& ans, vector<int> ds){
-        if(index==size){
-            ans.push_back(ds);
-            return;
-        }
+    void recur(vector<int>& nums, int size, vector<vector<int>>& ans, vector<int> ds, int index){
+        
         ans.push_back(ds);
-        for(int i= index; i<size; i++){
-            if(i!=index && nums[i] == nums[i-1]){
+
+        for(int i=index; i<size; i++){
+            if(i==index){
+                ds.push_back(nums[i]);
+                recur(nums,size,ans,ds,i+1);
+                ds.pop_back();
                 continue;
             }
-            ds.push_back(nums[i]);
-            helper(nums,i+1,size,ans,ds);
-            ds.pop_back();
-        }
 
+            if(nums[i] != nums[i-1]){
+                ds.push_back(nums[i]);
+                recur(nums,size,ans,ds,i+1);
+                ds.pop_back();
+                continue;
+            }
+        }
     }
 
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-
-        vector<vector<int>> ans;
-        int index=0;
         int size=nums.size();
+        vector<vector<int>> ans;
         vector<int> ds;
-        helper(nums,index,size,ans,ds);
+        sort(nums.begin(),nums.end());
+        recur(nums,size,ans,ds,0);
         return ans;
     }
 };
