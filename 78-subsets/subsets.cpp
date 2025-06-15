@@ -1,21 +1,24 @@
 class Solution {
 public:
-    int n;
-    vector<vector<int>> subsets(vector<int>& a) {
-        n = a.size();
-        vector<vector<int>> res;
-        vector<int> curr;
-        backTrack(res,0,curr,a);
-        return res;
-    }
-
-    void backTrack(vector<vector<int>>& res, int ind, vector<int> curr, vector<int>& a) {
-        if(ind==n) {
-            res.push_back(curr);
+    void recurr(vector<int>& nums, int index, int size, vector<int> ds, vector<vector<int>>& ans){
+        if(index==size){
+            ans.push_back(ds);
             return;
         }
-        backTrack(res, ind+1, curr, a);
-        curr.push_back(a[ind]);
-        backTrack(res, ind+1, curr, a);
+        ds.push_back(nums[index]);
+        recurr(nums,index+1, size, ds,ans);
+        ds.pop_back();
+        recurr(nums,index+1,size,ds,ans);
+    }
+
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<int> ds;
+        int size=nums.size();
+
+        int index=0;
+        vector<vector<int>> ans;
+        recurr(nums,index,size,ds,ans); 
+        return ans;
+
     }
 };
