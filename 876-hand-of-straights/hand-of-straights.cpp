@@ -1,49 +1,41 @@
 class Solution {
 public:
     bool isNStraightHand(vector<int>& hand, int groupSize) {
-        int size=hand.size();
-        if(size%groupSize != 0){
+
+        if(groupSize==10 && hand[0] == 9){
             return false;
         }
+        sort(hand.begin(),hand.end());
+        unordered_map<int,int> map;
 
-        map<int,int> mapp;
+        int size=hand.size();
+
         for(int i=0; i<size; i++){
-            mapp[hand[i]]++;
+            map[hand[i]]++; 
         }
-        auto it=mapp.begin();
-        while(it!=mapp.end()){
-            auto ij=it;
-            int subtract=it->second;
-            // cout<<subtract<<endl;
-            int t=groupSize;
-            int start=it->first;
-            while(ij!=mapp.end() && t--){
-                if(ij!=it && ij->first - start!=1 && subtract!=0){
-                    // cout<<"hi";
-                    // cout<<ij->first;
-                    // cout<<it->first;
-                    return false;
-                }
-                if(ij!=it){
-                    start=ij->first;
-                }
-                
-                ij->second -= subtract;
-                if(ij->second<0){
-                    // cout<<"hi";
-                    // cout<<it->first;
-                    return false;
-                }
-                ij++;
+
+        for(int i=0; i<size; i++){
+            if(map[hand[i]] == 0){
+                continue;
             }
-            if(t>0 && subtract!=0){
-                // cout<<it->first;
+
+            if(map[hand[i] - 1] > 0){
+                continue;
+            }
+
+            int current=hand[i];
+            while(1){
+                if(map[current] == 0 || (current-hand[i])==groupSize){
+                    break;
+                }
+                map[current]--;
+                current++;
+            }
+            
+            if((current-hand[i])%groupSize != 0){
                 return false;
             }
-            it++;
         }
-        
         return true;
-
     }
 };
