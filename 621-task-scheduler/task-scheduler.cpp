@@ -1,36 +1,33 @@
 class Solution {
 public:
     int leastInterval(vector<char>& tasks, int n) {
-        vector<int> freq(26, 0);
-        for (char t : tasks) {
-            freq[t - 'A']++;
+        int time=0;
+        unordered_map<char,int> map;
+        for(int i=0; i<tasks.size(); i++){
+            map[tasks[i]]++;
         }
-
         priority_queue<int> pq;
-        for (int f : freq) {
-            if (f > 0) pq.push(f);
+        for(auto it: map){
+            pq.push(it.second);
         }
-
-        queue<pair<int, int>> cooldown; // {time when it can be re-added, remaining count}
-        int time = 0;
-
-        while (!pq.empty() || !cooldown.empty()) {
+        queue<pair<int,int>> q; 
+        while(!(pq.empty()&&q.empty())){
             time++;
-
-            if (!pq.empty()) {
-                int cnt = pq.top(); pq.pop();
-                cnt--;
-                if (cnt > 0) {
-                    cooldown.push({time + n, cnt});
+            if(!pq.empty()){
+                int top=pq.top(); pq.pop();
+                if(top>1){
+                    q.push({time+n, top-1});
                 }
             }
-
-            if (!cooldown.empty() && cooldown.front().first == time) {
-                pq.push(cooldown.front().second);
-                cooldown.pop();
+            if(!q.empty()){
+                int timeReq=q.front().first;
+                int currFreq=q.front().second;
+                if(time==timeReq){
+                    q.pop();
+                    pq.push(currFreq);
+                }
             }
         }
-
         return time;
     }
 };
