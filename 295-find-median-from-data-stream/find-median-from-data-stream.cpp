@@ -44,17 +44,31 @@ public:
         //     }
         // }
 
-        // Step 1: Add to maxHeap
-        maxHeap.push(num);
-
-        // Step 2: Balance: maxHeap's top must be <= minHeap's top
-        minHeap.push(maxHeap.top());
-        maxHeap.pop();
-
-        // Step 3: Rebalance: maxHeap may have 1 more element than minHeap
-        if (maxHeap.size() < minHeap.size()) {
-            maxHeap.push(minHeap.top());
-            minHeap.pop();
+        if(maxHeap.size()==0){
+            maxHeap.push(num);
+            return;
+        }
+        if(minHeap.size() == 0){
+            maxHeap.push(num);
+            minHeap.push(maxHeap.top());
+            maxHeap.pop();
+            return;
+        }
+        if(maxHeap.size() == minHeap.size()){
+            maxHeap.push(num);
+            if(maxHeap.top() > minHeap.top()){
+                maxHeap.push(minHeap.top());
+                minHeap.pop();
+                minHeap.push(maxHeap.top());
+                maxHeap.pop();
+            }
+            return;
+        }
+        if(maxHeap.size() > minHeap.size()){
+            maxHeap.push(num);
+            minHeap.push(maxHeap.top());
+            maxHeap.pop();
+            return;
         }
     }
     
