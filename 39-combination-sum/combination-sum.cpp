@@ -1,30 +1,33 @@
 class Solution {
 public:
-    void recurr(vector<int>& candidates, int target, int index, int size, vector<vector<int>>& ans, vector<int> ds){
-        if(index==size && target == 0){
+
+    void recurr(vector<int>& nums, int target, int size, int index, vector<vector<int>>& ans, vector<int>& ds){
+        if(target == 0){
             ans.push_back(ds);
             return;
         }
         if(index==size){
             return;
         }
+        // notTake
+        recurr(nums, target, size, index+1, ans, ds);
 
-        recurr(candidates, target, index+1, size,ans, ds);
-
-        if(target >= candidates[index]){
-            ds.push_back(candidates[index]);
-            recurr(candidates, target-candidates[index], index, size, ans, ds);
+        if(nums[index] <= target){
+            ds.push_back(nums[index]);
+            recurr(nums, target-nums[index], size, index, ans, ds);
             ds.pop_back();
         }
+
     }
 
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        int size=candidates.size();
+
         vector<vector<int>> ans;
         vector<int> ds;
-        int size=candidates.size();
-        int index=0;
 
-        recurr(candidates,target,index,size,ans,ds);
+        recurr(candidates, target, size, 0, ans, ds);
+
         return ans;
     }
 };
