@@ -8,7 +8,7 @@ public:
         int countZero=0;
         int ans=0;
         while(j<size){
-            while(j<size){
+            while(j<size && countZero<=k){
                 if(nums[j] == 0){
                     countZero++;
                 }
@@ -18,17 +18,11 @@ public:
                 j++;
             }
             ans=max(ans, j-i);
-
-            while(i<=j){
-                if(nums[i] == 0){
-                    countZero--;
-                }
-                i++;
-                if(countZero <= k){
-                    break;
-                }
+            if(nums[i] == 0){
+                countZero--;
+                j++;
             }
-            j++;
+            i++;
         }
         return ans;
     }
