@@ -1,7 +1,7 @@
 class Solution {
 public:
     void rotate(vector<vector<int>>& matrix) {
-        // Transpose and rotate rows.
+        // Transpose and reverse rows.
         int n=matrix.size();
         int m=matrix[0].size();
 
