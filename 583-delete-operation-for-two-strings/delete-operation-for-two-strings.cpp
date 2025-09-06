@@ -1,34 +1,36 @@
 class Solution {
 public:
+
+    int recurr(string& word1, string& word2, int size1, int size2, int ind1, int ind2, vector<vector<int>>& dp){
+
+        if(ind1 < 0){
+            return ind2+1;
+        }
+        if(ind2 < 0){
+            return ind1+1;
+        }
+
+        if(dp[ind1][ind2] != -1){
+            return dp[ind1][ind2];
+        }
+
+        if(word1[ind1] == word2[ind2]){
+            return recurr(word1, word2, size1, size2, ind1-1, ind2-1, dp);
+        }
+
+        int first= 1 + recurr(word1, word2, size1, size2, ind1-1, ind2, dp);
+        int second = 1 + recurr(word1, word2, size1, size2, ind1, ind2-1, dp);
+
+        return dp[ind1][ind2] = min(first, second);
+
+    }
+
     int minDistance(string word1, string word2) {
         int size1=word1.size();
         int size2=word2.size();
 
-        vector<int> dp(size2+1, 0);
-        for(int i=0; i<=size2; i++){
-            dp[i]=i;
-        }
+        vector<vector<int>> dp(size1, vector<int>(size2, -1));
 
-        for(int i=0; i<size1; i++){
-            vector<int> currDp(size2+1,0);
-            for(int j=0; j<=size2; j++){
-                if(j==0){
-                    currDp[j]=i+1;
-                    continue;
-                }
-                if(word1[i] == word2[j-1]){
-                    currDp[j] = dp[j-1];
-                }
-                else{
-                    currDp[j] = 1 + min(currDp[j-1],dp[j]);
-                }
-            }
-            // for(int k=0; k<=size2; k++){
-            //     cout<<currDp[k]<<" ";
-            // }
-            // cout<<endl;
-            dp=currDp;
-        }
-        return dp[size2];
+        return recurr(word1, word2, size1, size2, size1-1, size2-1, dp);
     }
 };
