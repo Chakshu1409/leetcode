@@ -1,24 +1,35 @@
 class Solution {
 public:
-    int minPathSum(vector<vector<int>>& grid) {
-        int n=grid.size();
-        int m=grid[0].size();
+    int recurr(vector<vector<int>>& grid, int numRows, int numCols, int currRow, int currCol, vector<vector<int>>& dp){
 
-        vector<int> dp(m,0);
-        dp[0]=grid[0][0];
-        for(int i=1; i<m; i++){
-            dp[i] = dp[i-1] + grid[0][i];
+        if(currRow == 0 && currCol == 0){
+            return grid[0][0];
         }
-        for(int i=1; i<n; i++){
-            for(int j=0; j<m; j++){
-                if(j==0){
-                    dp[j]= dp[j] + grid[i][j];
-                }
-                else{
-                    dp[j] = grid[i][j] + min(dp[j-1],dp[j]);
-                }
-            }
+
+        int top= INT_MAX;
+
+        if(dp[currRow][currCol] != -1){
+            return dp[currRow][currCol];
         }
-        return dp[m-1];
+
+        if(currRow > 0){
+            top= recurr(grid, numRows, numCols, currRow-1, currCol, dp);
+        }
+
+        int left= INT_MAX;
+
+        if(currCol > 0){
+            left= recurr(grid, numRows, numCols, currRow, currCol-1, dp);
+        }
+
+        return dp[currRow][currCol] = grid[currRow][currCol] + min(left, top);
+
+    }
+
+    int minPathSum(vector<vector<int>>& grid) {
+        int numRows=grid.size();
+        int numCols=grid[0].size();
+        vector<vector<int>> dp(numRows, vector<int>(numCols, -1));
+        return recurr(grid, numRows, numCols, numRows-1, numCols-1, dp);
     }
 };
