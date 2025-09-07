@@ -1,31 +1,34 @@
 class Solution {
 public:
-    int helper(vector<int>& prices, int size, int index, int buy, vector<vector<int>>& dp){
-        if(index==size){
+    int recurr(vector<int>& prices, int size, int ind, int sell, vector<vector<int>>& dp){
+        if(ind == -1 && sell == 0){
+            return 0-1e9;
+        }
+        if(ind == -1){
             return 0;
         }
-        if(dp[index][buy] !=-1){
-            return dp[index][buy];
-        }
-        int notTake=helper(prices,size,index+1,buy,dp);
-        int take=0;
 
-        if(buy==0){
-            take=prices[index] + helper(prices,size,index+1,1,dp);
+        if(dp[ind][sell]!= -1){
+            return dp[ind][sell];
+        }
+
+        int notExecute = recurr(prices, size, ind-1, sell, dp);
+
+        int execute=-1;
+        if(sell == 1){
+            execute = prices[ind] + recurr(prices, size, ind-1, 0, dp);
         }
         else{
-            take=-prices[index] + helper(prices,size,index+1,0,dp);
+            execute = -prices[ind] + recurr(prices, size, ind-1, 1, dp);
         }
 
-        return dp[index][buy]=max(notTake,take);
+        return dp[ind][sell] = max(execute, notExecute);
     }
 
     int maxProfit(vector<int>& prices) {
         int size=prices.size();
-        int index=0;
-        int buy=1;
-        int profit=0;
-        vector<vector<int>> dp(size, vector<int>(2,-1));
-        return helper(prices,size,index,buy,dp);
+        int sell = 1;
+        vector<vector<int>> dp(size, vector<int>(2, -1));
+        return max(0,recurr(prices, size, size-1, sell, dp));
     }
 };
