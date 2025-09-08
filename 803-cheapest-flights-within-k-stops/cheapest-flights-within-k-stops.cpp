@@ -1,33 +1,45 @@
 class Solution {
 public:
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
-        vector<pair<int,int>>adj[n];
-        for(int i=0;i<flights.size();i++){
-            adj[flights[i][0]].push_back({flights[i][1],flights[i][2]});
+        unordered_map<int, vector<vector<int>>> adj;
+        for(auto it: flights){
+            adj[it[0]].push_back({it[1], it[2]});
         }
 
-        queue<pair<int,pair<int,int>>>q;
-        vector<int>dist(n,INT_MAX);
-        dist[src]=0;
-        q.push({0,{src,0}});
+        priority_queue< vector<int>, vector<vector<int>>, greater<vector<int>>> pq;
 
-        while(!q.empty()){
-            int stop=q.front().first;
-            int node=q.front().second.first;
-            int cost=q.front().second.second;
-            q.pop();
+        pq.push({0,0,src});
 
-            if(stop>k) continue;
-            for(int i=0;i<adj[node].size();i++){
-                int adjNode=adj[node][i].first;
-                int costWt=adj[node][i].second;
-                if(cost+costWt < dist[adjNode] && stop<=k){
-                    dist[adjNode]=cost+costWt;
-                    q.push({stop+1,{adjNode,dist[adjNode]}});
+        vector<int> costing(n,1e9);
+        costing[src]=0;
+
+        int ans=INT_MAX;
+        while(!pq.empty()){
+
+            int numSteps = pq.top()[0];
+            int cost = pq.top()[1];
+            int node = pq.top()[2];
+
+            pq.pop();
+
+            if(node == dst){
+                ans=min(ans, cost);
+            }
+
+            if(numSteps == k+1){
+                continue;
+            }
+
+            for(auto it: adj[node]){
+                if(costing[it[0]] > cost+it[1]){
+                    costing[it[0]]= cost+it[1];
+                    pq.push({numSteps+1, costing[it[0]], it[0]});
                 }
             }
         }
-        if(dist[dst]==INT_MAX) return -1;
-        return dist[dst];
+        if(ans == INT_MAX){
+            return -1;
+        }
+        return ans;
     }
 };
