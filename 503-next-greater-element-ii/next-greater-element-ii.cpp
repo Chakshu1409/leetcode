@@ -7,13 +7,18 @@ public:
         stack<int> st;
 
         for(int i=2*size-1; i>=0; i--){
-            while(!st.empty() && nums[i%size]>=st.top()){
-                st.pop();
+            while(1){
+                if(st.empty() || nums[i%size] < st.top()){
+                    if(!st.empty()){
+                        ans[i]=st.top();
+                    }
+                    st.push(nums[i%size]);
+                    break;
+                }
+                else{
+                    st.pop();
+                }
             }
-            if(!st.empty()){
-                ans[i]=st.top();
-            }
-            st.push(nums[i%size]);
         }
         vector<int> ansOrg;
         for(int i=0; i<size; i++){
