@@ -3,19 +3,19 @@ public:
     int removeDuplicates(vector<int>& nums) {
         int size=nums.size();
 
-        int i=0; 
-        int j=0;
+        int i=1; 
+        int j=1;
 
         while(j<size){
-            while(j<size && nums[i]==nums[j]){
+            if(nums[j] == nums[i-1]){
                 j++;
             }
-            if(j!=size){
+            else{
+                swap(nums[j], nums[i]);
                 i++;
-                swap(nums[i],nums[j]);
                 j++;
             }
         }
-        return i+1;
+        return i;
     }
 };
