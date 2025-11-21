@@ -4,14 +4,15 @@ public:
         int size=nums.size();
 
         int ans=INT_MIN;
-        int current=0;
+        int currentPrefixSum=0;
+        int minPrefixSum=0;
+
         for(int i=0; i<size; i++){
-            current+=nums[i];
-            ans = max(ans,current);
-            if(current<0){
-                current=0;
-            }
+            currentPrefixSum+=nums[i];
+            ans = max(ans, currentPrefixSum-minPrefixSum);
+            minPrefixSum = min(minPrefixSum, currentPrefixSum);
         }
+
         return ans;
     }
 };
