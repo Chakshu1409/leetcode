@@ -15,9 +15,10 @@ public:
         if(root==NULL){
             return 0;
         }
-        int leftSubtree=maxDepth(root->left);
-        int rightSubtree=maxDepth(root->right);
 
-        return 1 + max(leftSubtree,rightSubtree);
+        int maxDepthLeft=maxDepth(root->left);
+        int maxDepthRight=maxDepth(root->right);
+
+        return 1+max(maxDepthLeft, maxDepthRight);
     }
 };
