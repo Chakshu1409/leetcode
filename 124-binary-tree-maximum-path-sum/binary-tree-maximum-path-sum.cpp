@@ -11,30 +11,30 @@
  */
 class Solution {
 public:
-    int funct(TreeNode* root, int& ans, int& maxi){
-        if(root==NULL){
+
+    int recurr(TreeNode* root, int& ans){
+
+        if(root == NULL){
             return 0;
         }
-        maxi=max(maxi, root->val);
-        int left= funct(root->left, ans, maxi);
 
-        int right=funct(root->right, ans, maxi);
+        int left = recurr(root->left, ans);
+        int right = recurr(root->right, ans);
 
-        ans=max(ans, root->val+left+right);
-        ans=max(ans, root->val+max(left, right));
-        ans=max(ans, max(left,right));
+        int leftPlusRoot=root->val + left;
+        int rightPlusRoot=root->val + right;
+        int onlyRoot=root->val;
+        int leftPlusRootPlusRight=root->val + left + right;
 
-        return max(0,max(left, right)+root->val);
+        ans = max(ans, max(max(onlyRoot, leftPlusRootPlusRight), max(leftPlusRoot, rightPlusRoot)));
+
+        return max(0, max(onlyRoot, max(leftPlusRoot, rightPlusRoot)));
     }
 
     int maxPathSum(TreeNode* root) {
-        int ans=0;
-        int maxi=INT_MIN;
-        int maxPriceLeftRight=funct(root, ans,maxi);
+        int ans=INT_MIN;
+        int x=recurr(root, ans);
 
-        if(ans==0){
-            return maxi;
-        }
         return ans;
     }
 };
